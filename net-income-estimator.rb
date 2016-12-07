@@ -21,7 +21,6 @@ require './revenue-estimator'
 TAX_RATE = 0.34
 content_costs = [6e9, 6.5e9, 7e9]
 bandwidth_costs = []
-# TODO: number of subscribers
 projected_revenue = NetflixRevenueEstimator::netflix_projected_2017_revenue
 
 module NetflixNetIncomeEstimator

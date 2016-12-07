@@ -4,8 +4,6 @@
 # Ky-Cuong L. Huynh
 # 6 December 2017
 
-require 'awesome_print'
-
 # Revenue is computed as (number of subscribers for that month) * (average revenue/subscriber)
 # Then, we sum these up across 12 months, where the number of subscribers increases per month
 module NetflixRevenueEstimator
@@ -55,19 +53,8 @@ module NetflixRevenueEstimator
       end
     end
 
-    # if debug
-    #   puts "For Month 1: #{separate(NUM_SUBSCRIBERS_START_2017)} * $10 = $#{separate(num_current_subscribers * REVENUE_PER_SUBSCRIBER)}"
-    # end
     monthly_revenues = monthly_subscriber_count.map { |count| count * REVENUE_PER_SUBSCRIBER }
-    total_revenue_2017 = monthly_revenues:multi_status.reduce(:+)
-
-    # (2..12).each do |month_num|
-    #   num_current_subscribers += NUM_NEW_SUBSCRIBERS_PER_MONTH
-    #   if debug
-    #     puts "For Month #{month_num}: #{separate(num_current_subscribers)} * $10 = $#{separate(num_current_subscribers * REVENUE_PER_SUBSCRIBER)}"
-    #   end
-    #   total_revenue_2017 += num_current_subscribers * REVENUE_PER_SUBSCRIBER
-    # end
+    total_revenue_2017 = monthly_revenues.reduce(:+)
 
     if debug
       puts "Total estimated Netflix revenue for 2017: $#{separate(total_revenue_2017)}"
