@@ -21,9 +21,12 @@ require './revenue-estimator'
 module NetflixNetIncomeEstimator
   # NOTE: These numbers come from our report (which is not presently public)
   # Format: { cost => percent_probability_of_cost }
-  CONTENT_COSTS_DISTRIBUTION = { 5e9 => 70, 6e9 => 20, 6.5e9 => 10 }
-  BANDWIDTH_COSTS_DISTRIBUTION = { 21_069_900 => 15, 23_879_220 => 15, 25_986_210 => 30, 29_497_860 => 40 }
   ADMIN_COSTS = 1_514_647.83
+  RESEARCH_DEV_COSTS = 800_469.24
+
+  CONTENT_COSTS_DISTRIBUTION = { 6e9 => 30, 6.75e9 => 40, 7e9 => 30 }
+  BANDWIDTH_COSTS_DISTRIBUTION = { 21_069_900 => 15, 23_879_220 => 15, 25_986_210 => 30, 29_497_860 => 40 }
+
 
   TAX_RATE = 0.34
 
@@ -41,18 +44,18 @@ module NetflixNetIncomeEstimator
   end
 
   def self.netflix_projected_net_income(debug: false)
-    admin_costs      = ADMIN_COSTS
     content_costs    = sample(CONTENT_COSTS_DISTRIBUTION)
     bandwidth_costs  = sample(BANDWIDTH_COSTS_DISTRIBUTION)
-    total_costs      = content_costs + bandwidth_costs
-    revenue          = NetflixRevenueEstimator::netflix_projected_revenue
+    other_costs      = ADMIN_COSTS + RESEARCH_DEV_COSTS
+    total_costs      = content_costs + bandwidth_costs + other_costs
 
-    pretax_profit  = revenue - total_costs
-    net_income     = pretax_profit * (1 - TAX_RATE)
+    revenue          = NetflixRevenueEstimator::netflix_projected_revenue
+    pretax_profit    = revenue - total_costs
+    net_income       = pretax_profit * (1 - TAX_RATE)
 
     if debug
-      puts "Fixed Costs (content): $#{NetflixRevenueEstimator::separate(content_costs)}"
-      puts "Variable Costs (bandwidth): $#{NetflixRevenueEstimator::separate(variable_costs)}"
+      puts "Content Costs (content): $#{NetflixRevenueEstimator::separate(content_costs)}"
+      puts "Bandwidth Costs (bandwidth): $#{NetflixRevenueEstimator::separate(bandwidth_costs)}"
       puts "Total Costs: $ #{NetflixRevenueEstimator::separate(total_costs)}"
       puts "Revenue: $#{NetflixRevenueEstimator::separate(revenue)}"
       puts "Net Income: $#{NetflixRevenueEstimator::separate(net_income)}"
@@ -76,7 +79,7 @@ module NetflixNetIncomeEstimator
     std_dev     = results.standard_deviation
 
     puts "SIMULATION RESULTS"
-    puts "For #{NetflixRevenueEstimator::separate(iterations)} samples, we have: "
+    puts "For #{NetflixRevenueEstimator::separate(iterations)} samples, we have:"
     puts "Average net income: $#{NetflixRevenueEstimator::separate(average)}"
     puts "Median net income: $#{NetflixRevenueEstimator::separate(median)}"
     puts "Mode net income: $#{NetflixRevenueEstimator::separate(mode)}"
