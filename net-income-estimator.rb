@@ -19,7 +19,7 @@ require './revenue-estimator'
 # Subscribers = prediction from historical data
 
 module NetflixNetIncomeEstimator
-
+  # NOTE: These numbers come from our report (which is not presently public)
   # Format: { cost => percent_probability_of_cost }
   CONTENT_COSTS_DISTRIBUTION = { 5e9 => 70, 6e9 => 20, 6.5e9 => 10 }
   BANDWIDTH_COSTS_DISTRIBUTION = { 21_069_900 => 15, 23_879_220 => 15, 25_986_210 => 30, 29_497_860 => 40 }
@@ -64,14 +64,25 @@ module NetflixNetIncomeEstimator
     # No denial-of-service, please
     return if iterations < 0 || iterations > 100_000
 
+    results = []
     iterations.times do
-      netflix_projected_2017_net_income(debug: true)
+      results << netflix_projected_2017_net_income(debug: false)
     end
 
-    # TODO: stats on results
+    average     = results.mean
+    median      = results.median
+    mode        = results.mode
+    std_dev     = results.standard_deviation
+
+    puts "SIMULATION RESULTS"
+    puts "For #{NetflixRevenueEstimator::separate(iterations)} samples, we have: "
+    puts "Average net income: $#{NetflixRevenueEstimator::separate(average)}"
+    puts "Median net income: $#{NetflixRevenueEstimator::separate(median)}"
+    puts "Mode net income: $#{NetflixRevenueEstimator::separate(mode)}"
+    puts "Standard deviation of the above: $#{NetflixRevenueEstimator::separate(std_dev)}"
   end
 end
 
 if $PROGRAM_NAME == __FILE__
-  NetflixNetIncomeEstimator::simulate(iterations: 1000)
+  NetflixNetIncomeEstimator::simulate(iterations: 1_000)
 end

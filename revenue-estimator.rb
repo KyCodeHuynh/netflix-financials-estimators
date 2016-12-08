@@ -4,6 +4,7 @@
 # Ky-Cuong L. Huynh
 # 6 December 2017
 
+# NOTE: These numbers come from our report (which is not presently public)
 # Revenue is computed as (number of subscribers for that month) * (average revenue/subscriber)
 # Then, we sum these up across 12 months, where the number of subscribers increases per month
 module NetflixRevenueEstimator
