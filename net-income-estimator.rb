@@ -66,7 +66,7 @@ module NetflixNetIncomeEstimator
 
   def self.simulate(iterations:)
     # No denial-of-service, please
-    return if iterations < 0 || iterations > 100_000
+    return if iterations < 0 || iterations > 50_000
 
     results = []
     iterations.times do
@@ -80,6 +80,7 @@ module NetflixNetIncomeEstimator
 
     puts "SIMULATION RESULTS"
     puts "For #{NetflixRevenueEstimator::separate(iterations)} samples, we have:"
+    puts "Revenue: $#{NetflixRevenueEstimator::separate(NetflixRevenueEstimator::netflix_projected_revenue)}"
     puts "Average net income: $#{NetflixRevenueEstimator::separate(average)}"
     puts "Median net income: $#{NetflixRevenueEstimator::separate(median)}"
     puts "Mode net income: $#{NetflixRevenueEstimator::separate(mode)}"
