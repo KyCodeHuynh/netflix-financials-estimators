@@ -19,14 +19,13 @@ require './revenue-estimator'
 # Subscribers = prediction from historical data
 
 module NetflixNetIncomeEstimator
-  # NOTE: These numbers come from our report (which is not presently public)
-  # Format: { cost => percent_probability_of_cost }
+  # NOTE: all of these numbers come from our report (which is not presently public)
   ADMIN_COSTS = 1_514_647_000.83
   RESEARCH_DEV_COSTS = 800_469_000.24
 
+  # Format: { cost => percent_probability_of_cost }
   CONTENT_COSTS_DISTRIBUTION = { 5.5e9 => 20, 6.5e9 => 40, 7e9 => 40 }
   BANDWIDTH_COSTS_DISTRIBUTION = { 21_069_900 => 15, 23_879_220 => 15, 25_986_210 => 30, 29_497_860 => 40 }
-
 
   TAX_RATE = 0.34
 
