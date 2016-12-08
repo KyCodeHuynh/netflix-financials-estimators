@@ -23,6 +23,7 @@ module NetflixNetIncomeEstimator
   # Format: { cost => percent_probability_of_cost }
   CONTENT_COSTS_DISTRIBUTION = { 5e9 => 70, 6e9 => 20, 6.5e9 => 10 }
   BANDWIDTH_COSTS_DISTRIBUTION = { 21_069_900 => 15, 23_879_220 => 15, 25_986_210 => 30, 29_497_860 => 40 }
+  ADMIN_COSTS = 1_514_647.83
 
   TAX_RATE = 0.34
 
@@ -39,18 +40,18 @@ module NetflixNetIncomeEstimator
     end
   end
 
-  def self.netflix_projected_2017_net_income(debug: false)
-
-    fixed_costs    = sample(CONTENT_COSTS_DISTRIBUTION)
-    variable_costs = sample(BANDWIDTH_COSTS_DISTRIBUTION)
-    total_costs    = fixed_costs + variable_costs
-    revenue        = NetflixRevenueEstimator::netflix_projected_2017_revenue
+  def self.netflix_projected_net_income(debug: false)
+    admin_costs      = ADMIN_COSTS
+    content_costs    = sample(CONTENT_COSTS_DISTRIBUTION)
+    bandwidth_costs  = sample(BANDWIDTH_COSTS_DISTRIBUTION)
+    total_costs      = content_costs + bandwidth_costs
+    revenue          = NetflixRevenueEstimator::netflix_projected_revenue
 
     pretax_profit  = revenue - total_costs
     net_income     = pretax_profit * (1 - TAX_RATE)
 
     if debug
-      puts "Fixed Costs (content): $#{NetflixRevenueEstimator::separate(fixed_costs)}"
+      puts "Fixed Costs (content): $#{NetflixRevenueEstimator::separate(content_costs)}"
       puts "Variable Costs (bandwidth): $#{NetflixRevenueEstimator::separate(variable_costs)}"
       puts "Total Costs: $ #{NetflixRevenueEstimator::separate(total_costs)}"
       puts "Revenue: $#{NetflixRevenueEstimator::separate(revenue)}"
@@ -66,7 +67,7 @@ module NetflixNetIncomeEstimator
 
     results = []
     iterations.times do
-      results << netflix_projected_2017_net_income(debug: false)
+      results << netflix_projected_net_income(debug: false)
     end
 
     average     = results.mean
@@ -84,5 +85,5 @@ module NetflixNetIncomeEstimator
 end
 
 if $PROGRAM_NAME == __FILE__
-  NetflixNetIncomeEstimator::simulate(iterations: 1_000)
+  NetflixNetIncomeEstimator::simulate(iterations: 10_000)
 end

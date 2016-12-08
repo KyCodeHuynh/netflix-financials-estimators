@@ -1,6 +1,6 @@
 #!usr/bin/env ruby
 
-# Netflix 2017 Revenue Estimator
+# Netflix Revenue Estimator
 # Ky-Cuong L. Huynh
 # 6 December 2017
 
@@ -8,8 +8,8 @@
 # Revenue is computed as (number of subscribers for that month) * (average revenue/subscriber)
 # Then, we sum these up across 12 months, where the number of subscribers increases per month
 module NetflixRevenueEstimator
-  # 2017 is estimated to start with 82.57 million subscribers
-  NUM_SUBSCRIBERS_START_2017 = 82.57e6
+  # 2016 is estimated to start with 70.13 million subscribers
+  NUM_SUBSCRIBERS_START = 70.136e6
   # 1.036 million new subscribers per month
   NUM_NEW_SUBSCRIBERS_PER_MONTH = 1.036e6
   # $10/subscriber on average
@@ -40,13 +40,13 @@ module NetflixRevenueEstimator
     results
   end
 
-  def self.netflix_projected_2017_revenue(debug: false)
+  def self.netflix_projected_revenue(debug: false)
     # Remaining months' revenue
-    num_current_subscribers = NUM_SUBSCRIBERS_START_2017
+    num_current_subscribers = NUM_SUBSCRIBERS_START
     # Cumulative sum, initialized with January's revenue
-    total_revenue_2017 = NUM_SUBSCRIBERS_START_2017 * REVENUE_PER_SUBSCRIBER
+    total_revenue = NUM_SUBSCRIBERS_START * REVENUE_PER_SUBSCRIBER
 
-    monthly_subscriber_count = num_subscribers_by_month(start: NUM_SUBSCRIBERS_START_2017, step: NUM_NEW_SUBSCRIBERS_PER_MONTH)
+    monthly_subscriber_count = num_subscribers_by_month(start: NUM_SUBSCRIBERS_START, step: NUM_NEW_SUBSCRIBERS_PER_MONTH)
 
     if debug
       monthly_subscriber_count.each_with_index do |count, index|
@@ -55,15 +55,14 @@ module NetflixRevenueEstimator
     end
 
     monthly_revenues = monthly_subscriber_count.map { |count| count * REVENUE_PER_SUBSCRIBER }
-    total_revenue_2017 = monthly_revenues.reduce(:+)
+    total_revenue = monthly_revenues.reduce(:+)
 
     if debug
-      puts "Total estimated Netflix revenue for 2017: $#{separate(total_revenue_2017)}"
+      puts "Total estimated Netflix revenue for 2017: $#{separate(total_revenue)}"
     end
 
-    total_revenue_2017
+    total_revenue
   end
 end
 
-NetflixRevenueEstimator::netflix_projected_2017_revenue(debug: true) if $PROGRAM_NAME == __FILE__
-
+NetflixRevenueEstimator::netflix_projected_revenue(debug: true) if $PROGRAM_NAME == __FILE__
